@@ -28,7 +28,7 @@ const Listings = ({countries}) => {
               id={val?.id || index}
               image={val?.image}
               title={val?.name}
-              listings={val?.listings || 1500}
+              listings={val?.listingCount}
             />
           ))}
         </div>

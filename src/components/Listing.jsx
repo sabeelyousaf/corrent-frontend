@@ -7,7 +7,7 @@ const Listing = ({id, image, title, listings}) => {
       <Link to={`/property?country=${title}`}>
         <img
           className="w-[120px] h-[120px] rounded-full object-center object-cover mb-2"
-          src="https://www.shutterstock.com/image-photo/4k-image-capturing-majestic-burj-600nw-2594598555.jpg"
+          src={image}
           alt=""
         />
       </Link>

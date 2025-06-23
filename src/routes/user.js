@@ -7,6 +7,7 @@ import Register from "../pages/auth/Register";
 import VerifyOTP from "../pages/auth/VerifyOTP";
 import AfterSearch from "../pages/landing/AfterSearch";
 import CheckoutPage from "../pages/landing/Checkout";
+import Contact from "../pages/landing/Contact";
 import Home from "../pages/landing/Home";
 import PropertyDetails from "../pages/landing/PropertyDetails";
 import RoomApplication from "../pages/tennant/RoomApplication";
@@ -48,6 +49,11 @@ export const userRoutes = [
     title: "favorites",
     path: "/account",
     element: Profile,
+  },
+   {
+    title: "Contact",
+    path: "/contact",
+    element: Contact,
   },
 ];
 
