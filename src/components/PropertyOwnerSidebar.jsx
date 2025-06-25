@@ -50,12 +50,12 @@ const PropertyOwnerSidebar = ({component: Component, title, user}) => {
 
         <div className="my-8">
           <Link
-            to={'/property-owner/dashboard'}
-            className={`w-full flex items-center gap-2 p-2.5 rounded-sm hover:bg-accent_blue/20 hover:text-accent_blue_dark hover:font-medium duration-200 ease-in ${isActive ('/property-owner/dashboard') ? 'bg-accent_blue text-white' : ''}`}
+            to={'/dashboard'}
+            className={`w-full flex items-center gap-2 p-2.5 rounded-sm hover:bg-accent_blue/20 hover:text-accent_blue_dark hover:font-medium duration-200 ease-in ${isActive ('/dashboard') ? 'bg-accent_blue text-white' : ''}`}
           >
             <span>
               <GoHome
-                className={`text-xl text-accent_red ${isActive ('/property-owner/dashboard') ? 'text-white' : ''}`}
+                className={`text-xl text-accent_red ${isActive ('/dashboard') ? 'text-white' : ''}`}
               />
             </span>
             <span>Dashboard</span>
@@ -69,27 +69,27 @@ const PropertyOwnerSidebar = ({component: Component, title, user}) => {
             <div className="my-1">
               {[
                 {
-                  path: '/property-owner/metrics',
+                  path: '/metrics',
                   icon: VscGraphLine,
                   label: 'Metrics',
                 },
                 {
-                  path: '/property-owner/manage',
+                  path: '/manage',
                   icon: FaRegStickyNote,
                   label: 'Manage',
                 },
                 {
-                  path: '/property-owner/earnings',
+                  path: '/earnings',
                   icon: LuCircleDollarSign,
                   label: 'Earnings',
                 },
                 {
-                  path: '/property-owner/resources',
+                  path: '/resources',
                   icon: IoLayersOutline,
                   label: 'Resources',
                 },
                 {
-                  path: '/property-owner/refer-host',
+                  path: '/refer-host',
                   icon: LuUserSearch,
                   label: 'Refer a Host',
                 },
@@ -124,56 +124,54 @@ const PropertyOwnerSidebar = ({component: Component, title, user}) => {
               <IoMdNotifications className="text-xl text-zinc-800" />
             </Link>
 
-            <div className="relative" ref={dropdownRef}>
-              <div
-                className="flex items-center gap-2 cursor-pointer"
-                onClick={() => setDropdownOpen (prev => !prev)}
-              >
-                <img
-                  src={user?.avatar?.secure_url}
-                  alt=""
-                  className="rounded-full h-10 w-10"
-                />
-                <div>
-                  <p className="text-sm">{user?.firstName} {user?.lastName}</p>
-                  <p className="text-xs font-medium text-accent_blue">
-                    Property Owner
-                  </p>
-                </div>
-              </div>
-              {dropdownOpen &&
-                <div className="absolute right-0 mt-2 w-[220px] p-4 bg-white shadow-md rounded-md z-50">
+          <div className="relative" ref={dropdownRef}>
+  <div
+    className="flex items-center gap-2 cursor-pointer"
+    onClick={() => setDropdownOpen(prev => !prev)}
+  >
+    <img
+      src={user?.avatar?.secure_url}
+      alt="avatar"
+      className="rounded-full h-10 w-10 object-cover"
+    />
+    <div className="hidden sm:block">
+      <p className="text-sm truncate">{user?.firstName} {user?.lastName}</p>
+      <p className="text-xs font-medium text-accent_blue truncate">Property Owner</p>
+    </div>
+  </div>
 
-                  <div className="flex items-center gap-2 border-b border-zinc-200 pb-4">
-                   <img
-                  src={user?.avatar?.secure_url}
-                  alt=""
-                  className="rounded-full h-10 w-10"
-                />
-                    <div>
-                      <p className="text-sm font-medium">{user?.firstName} {user?.lastName}</p>
-                      <span className="text-xs text-zinc-600 font-medium">
-                   {user?.email}
-                      </span>
-                    </div>
-                  </div>
-                  <Link
-                    to="/property-owner/settings"
-                    className="block px-4 py-2 text-sm hover:bg-gray-100"
-                    onClick={() => setDropdownOpen (false)}
-                  >
-                    <span />
-                    <span>Settings</span>
-                  </Link>
+  {dropdownOpen && (
+    <div className="absolute right-0 mt-2 min-w-[200px] max-w-[90vw] p-4 bg-white shadow-lg rounded-lg z-50 sm:w-[220px]">
+      <div className="flex items-center gap-2 border-b border-zinc-200 pb-4">
+        <img
+          src={user?.avatar?.secure_url}
+          alt="avatar"
+          className="rounded-full h-10 w-10 object-cover"
+        />
+        <div className="truncate">
+          <p className="text-sm font-medium truncate">{user?.firstName} {user?.lastName}</p>
+          <span className="text-xs text-zinc-600 font-medium truncate">{user?.email}</span>
+        </div>
+      </div>
 
-                  <button
-                    className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
-                    onClick={handleLogout}
-                  >
-                    Logout
-                  </button>
-                </div>}
-            </div>
+      <Link
+        to="/settings"
+        className="block px-4 py-2 text-sm hover:bg-gray-100 transition"
+        onClick={() => setDropdownOpen(false)}
+      >
+        Settings
+      </Link>
+
+      <button
+        className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 transition"
+        onClick={handleLogout}
+      >
+        Logout
+      </button>
+    </div>
+  )}
+</div>
+
           </div>
         </div>
 

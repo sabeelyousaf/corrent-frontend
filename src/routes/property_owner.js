@@ -11,60 +11,61 @@ import Settings from "../pages/property_owner/Settings";
 
 export const propertyOwnerRoutes = [
   {
-    path: "/property-owner/dashboard",
+    path: "/dashboard",
     element: Dashboard,
     title: "Dashboard",
   },
 
   {
-    path: "/property-owner/metrics",
+    path: "/metrics",
     element: PropertyOwnerMetrics,
     title: "Metrics",
   },
 
   {
-    path: "/property-owner/manage",
+    path: "/manage",
     element: PropertyOwnerManage,
     title: "Manage",
   },
 
   {
-    path: "/property-owner/manage/property/:id/view",
+    path: "/manage/property/:id/view",
     element: PropertyDetails,
     title: "Property Details",
   },
   {
-    path: "/property-owner/manage/property/add",
+    path: "/manage/property/add",
     element: AddNewProperty,
     title: "Add New Property",
   },
   {
-    path: "/property-owner/manage/room/add",
+    path: "/manage/room/add",
     element: AddNewRoom,
     title: "Add New Room",
   },
 
   {
-    path: "/property-owner/earnings",
+    path: "/earnings",
     element: PropertyOwnerEarnings,
     title: "Earnings",
   },
 
   {
-    path: "/property-owner/resources",
+    path: "/resources",
     element: PropertyOwnerResources,
     title: "Resources",
   },
 
   {
-    path: "/property-owner/refer-host",
+    path: "/refer-host",
     element: PropertyOwnerReferAHost,
     title: "Refer A Host",
   },
 
   {
-    path: "/property-owner/settings",
+    path: "/settings",
     element: Settings,
     title: "Settings",
   },
+  
 ];

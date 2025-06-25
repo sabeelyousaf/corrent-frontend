@@ -65,7 +65,7 @@ export const propertyApi = {
     }
   },
 
-    all: async () => {
+  all: async () => {
     try {
       const response = await axiosInstance.get(ENDPOINTS.PROPERTY.all);
       return response.data;
@@ -73,7 +73,6 @@ export const propertyApi = {
       throw error.response?.data || { message: "property fetch failed" };
     }
   },
-
 
   get: async (id) => {
     try {
@@ -96,4 +95,24 @@ export const propertyApi = {
       };
     }
   },
+
+  Scoring: async (id) => {
+    try {
+      const response = await axiosInstance.get(ENDPOINTS.PROPERTY.SCORING(id));
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: "property fetch failed" };
+    }
+  },
+
+  rating: async () => {
+    try {
+      const response = await axiosInstance.get(ENDPOINTS.PROPERTY.rating);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: "property fetch failed" };
+    }
+  },
+
+
 };

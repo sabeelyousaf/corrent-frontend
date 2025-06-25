@@ -25,6 +25,8 @@ export const ENDPOINTS = {
     resendOTP:`${BASEURL}/resend-otp`,
     forgotpassword:`${BASEURL}/forgot-password`,
     resetPassword:`${BASEURL}/reset-password`,
+    earning:`${BASEURL}/earnings`,
+    tenure:`${BASEURL}/tenure/stat`,
   },
   BOOKING:{
   CREATE: (roomId) => `${BASEURL}/booking/${roomId}`,
@@ -42,5 +44,8 @@ export const ENDPOINTS = {
     delete: (id) => `${BASEURL}/property/${id}`,
     update: (id) => `${BASEURL}/property/${id}`,
     create: `${BASEURL}/property`,
+    SCORING: (id) => `${BASEURL}/${id}/score `,
+    rating: `${BASEURL}/property/rating/list`,
+
   }
 };

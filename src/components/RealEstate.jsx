@@ -79,7 +79,7 @@ const RealEstate = ({
       </div>
 
       <div className="w-full text-left">
-        <Link to={`/property/${id}`}>
+        <Link to={`/property/${slug}`}>
           <h3 className="text-lg font-semibold">{title}</h3>
         </Link>
         <p className="flex items-center gap-1 mt-1">

@@ -11,6 +11,7 @@ import Promotions from '../../components/property_owner/manage/Promotions';
 import {propertyApi} from '../../api/property';
 import {toast} from 'react-hot-toast';
 import Setting from '../../components/property_owner/manage/Setting';
+import {useSelector} from 'react-redux';
 
 const PropertyDetails = () => {
   const {id} = useParams ();
@@ -18,6 +19,7 @@ const PropertyDetails = () => {
   const [filter, setFilter] = useState ('overview');
   const [property, setProperty] = useState (null);
   const [loading, setLoading] = useState (true);
+  const user = useSelector (state => state.auth.user);
 
   // Fetch property details
   useEffect (
@@ -51,7 +53,7 @@ const PropertyDetails = () => {
       <div className="w-full p-8 text-center">
         <p>Property not found</p>
         <button
-          onClick={() => navigate ('/property-owner/manage')}
+          onClick={() => navigate ('/manage')}
           className="mt-4 btn bg-blue-600 text-white"
         >
           Back to Properties
@@ -89,10 +91,11 @@ const PropertyDetails = () => {
         </div>
 
         <div className="flex items-center gap-2 w-full md:w-auto">
+  {user?.role === 'property_owner' && (
           <Link to={`/property-owner/manage/room/add`} className="btn !text-sm">
             Add Room
           </Link>
-
+  )}
           <div className="ml-0 md:ml-8 flex items-center gap-3 md:gap-6 flex-wrap">
             <div className="flex items-center gap-2">
               <span>

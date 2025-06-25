@@ -1,4 +1,5 @@
-import React, {useState, useEffect} from 'react';
+"use client"
+import React, {useState} from 'react';
 import toast from 'react-hot-toast';
 import {useNavigate} from 'react-router-dom';
 
@@ -90,41 +91,42 @@ const AddNewProperty = () => {
     setLivingRoom (prev => ({...prev, [key]: !prev[key]}));
   };
 
-  const handleFormSubmit = async e => {
-    e.preventDefault ();
-    setLoading (true);
+ const handleFormSubmit = async e => {
+    e.preventDefault();
+    setLoading(true);
 
     try {
-      // Prepare payload
-      const payload = {
-        title,
-        size,
-        country,
-        membersCapacity,
-        billsIncludedUpTo,
-        numberOfBathrooms,
-        bathrooms: bathrooms.slice (0, numberOfBathrooms),
-        kitchen,
-        livingRoom,
-        location,
-        status: 'available',
-      };
+      // Create FormData object for multipart/form-data
+      const formData = new FormData();
+      // Append simple fields
+      formData.append('title', title);
+      formData.append('size', size);
+      formData.append('country', country);
+      formData.append('membersCapacity', membersCapacity);
+      formData.append('billsIncludedUpTo', billsIncludedUpTo);
+      formData.append('numberOfBathrooms', numberOfBathrooms);
+      formData.append('status', 'available');
+      // Append complex fields as JSON strings
+      formData.append('bathrooms', JSON.stringify(bathrooms.slice(0, numberOfBathrooms)));
+      formData.append('kitchen', JSON.stringify(kitchen));
+      formData.append('livingRoom', JSON.stringify(livingRoom));
+      formData.append('location', JSON.stringify(location));
 
-      //   // Append images
-      //   propertyImages.forEach (file => {
-      //     formData.append ('propertyImages', file);
-      //   });
+      // Append images
+      propertyImages.forEach(file => {
+        formData.append('images', file); 
+      });
 
-      // Call API
-      const response = await propertyApi.create (payload);
+      // Call API with FormData
+      const response = await propertyApi.create(formData);
 
-      toast.success ('Property created successfully!');
-      navigate ('/property-owner/manage');
+      toast.success('Property created successfully!');
+      // navigate('/property-owner/manage');
     } catch (error) {
-      console.error ('Create property error:', error);
-      toast.error (error.message || 'Failed to create property');
+      console.error('Create property error:', error);
+      toast.error(error.response?.data?.message || error.message || 'Failed to create property');
     } finally {
-      setLoading (false);
+      setLoading(false);
     }
   };
 

@@ -8,6 +8,7 @@ import { FaShare } from "react-icons/fa"
 import { IoMdArrowBack } from "react-icons/io"
 import Loader from '../../components/Loader'
 import { propertyApi } from '../../api/property'
+import { useSelector } from 'react-redux'
 
 const statusColors = {
     available: "bg-green-200/70 text-green-700",
@@ -33,12 +34,13 @@ const PropertyOwnerManage = () => {
     const [showDeleteModal, setShowDeleteModal] = useState(false)
     const [propertyToDelete, setPropertyToDelete] = useState(null)
     const [deleting, setDeleting] = useState(false)
-    
+    const user = useSelector((state) => state.auth.user);
+
     // Share modal states
     const [showShareModal, setShowShareModal] = useState(false)
     const [propertyToShare, setPropertyToShare] = useState(null)
     const [shareSuccess, setShareSuccess] = useState(null)
-
+    
     useEffect(() => {
         fetchProperties()
     }, [])
@@ -276,21 +278,33 @@ const PropertyOwnerManage = () => {
             <div className='w-full bg-white rounded-lg p-4'>
                 {/* Top Controls */}
                 <div className='flex items-center justify-between'>
-                    <div className='flex items-center gap-4'>
-                        <button className='btn !text-sm'>Bulk Edit</button>
-                        <ToggleSwitch />
-                    </div>
-                    <div className='flex items-center gap-4'>
-                        <Link to="/property-owner/manage/room/add" className="btn text-sm">Add Room</Link>
-                        <Link to="/property-owner/manage/property/add" className="btn text-sm">Add Property</Link>
-                        <input
-                            type="text"
-                            value={search}
-                            onChange={(e) => setSearch(e.target.value)}
-                            className='text-sm border border-zinc-200 min-w-[300px] rounded-lg p-3'
-                            placeholder='Search'
-                        />
-                    </div>
+                  <div className="flex items-center gap-4">
+  {user?.role === 'property_owner' && (
+    <>
+      <button className="btn !text-sm">Bulk Edit</button>
+    </>
+  )}
+      <ToggleSwitch />
+
+</div>
+
+               <div className='flex items-center gap-4'>
+  {user?.role === 'property_owner' && (
+    <>
+      <Link to="/manage/room/add" className="btn text-sm">Add Room</Link>
+      <Link to="/manage/property/add" className="btn text-sm">Add Property</Link>
+    </>
+  )}
+  
+  <input
+    type="text"
+    value={search}
+    onChange={(e) => setSearch(e.target.value)}
+    className='text-sm border border-zinc-200 min-w-[300px] rounded-lg p-3'
+    placeholder='Search'
+  />
+</div>
+
                 </div>
 
                 {/* Table */}
@@ -320,7 +334,7 @@ const PropertyOwnerManage = () => {
                                         />
                                     </td>
                                     <td>
-                                        <Link to={`/property-owner/manage/property/${item._id}/view`} className='flex items-center gap-2'>
+                                        <Link to={`/manage/property/${item._id}/view`} className='flex items-center gap-2'>
                                             <img 
                                                 src={
                                                     item.propertyImages && item.propertyImages.length > 0 
@@ -344,28 +358,34 @@ const PropertyOwnerManage = () => {
                                     <td>${item.billsIncludedUpTo || "0"}</td>
                                     <td>{item._id ? item._id.slice(-5) : "N/A"}</td>
                                     <td>{item.location?.address || "Location not specified"}</td>
-                                    <td>
-                                        <div className='flex items-center gap-2'>
-                                            <Link 
-                                                to={`/property-owner/manage/property/${item._id}/edit`}
-                                                className="text-gray-600 hover:text-black"
-                                            >
-                                                <MdOutlineEdit className='text-xl' />
-                                            </Link>
-                                            <button 
-                                                className='cursor-pointer text-gray-600 hover:text-red-500'
-                                                onClick={() => openDeleteModal(item)}
-                                            >
-                                                <RiDeleteBin6Line className='text-xl' />
-                                            </button>
-                                            <button 
-                                                className='cursor-pointer text-gray-600 hover:text-blue-500'
-                                                onClick={() => openShareModal(item)}
-                                            >
-                                                <FaShare className='text-lg' />
-                                            </button>
-                                        </div>
-                                    </td>
+                                   <td>
+  <div className='flex items-center gap-2'>
+    {user?.role === 'property_owner' && (
+      <>
+        <Link 
+          to={`/property-owner/manage/property/${item._id}/edit`}
+          className="text-gray-600 hover:text-black"
+        >
+          <MdOutlineEdit className='text-xl' />
+        </Link>
+        <button 
+          className='cursor-pointer text-gray-600 hover:text-red-500'
+          onClick={() => openDeleteModal(item)}
+        >
+          <RiDeleteBin6Line className='text-xl' />
+        </button>
+      </>
+    )}
+    {/* Shared button visible to all roles */}
+    <button 
+      className='cursor-pointer text-gray-600 hover:text-blue-500'
+      onClick={() => openShareModal(item)}
+    >
+      <FaShare className='text-lg' />
+    </button>
+  </div>
+</td>
+
                                 </tr>
                             ))}
                             {paginatedData.length === 0 && (

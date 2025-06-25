@@ -1,28 +1,12 @@
 import React from 'react';
 import Rating from './Rating';
 
-const ratingsData = [
-  {
-    property: 'Arlington Heights, VA',
-    member: 'John D.',
-    rating: 4.5,
-    comment: 'Very clean and well-maintained. Quiet neighborhood.',
-  },
-  {
-    property: 'Virginia Beach Oceanfront, VA',
-    member: 'Emily R.',
-    rating: 4.8,
-    comment: 'Amazing views and walkable to everything. Highly recommend!',
-  },
-  {
-    property: 'Richmond Downtown, VA',
-    member: 'Carlos M.',
-    rating: 3.9,
-    comment: 'Good location but a bit noisy during weekends.',
-  },
-];
+const MemberRatings = ({ currentData }) => {
+  // If no data is available yet
+  if (!currentData) {
+    return <div>Loading ratings...</div>;
+  }
 
-const MemberRatings = () => {
   return (
     <section className="w-full">
       <h2 className="text-xl font-semibold">Members Rating</h2>
@@ -33,18 +17,27 @@ const MemberRatings = () => {
         </p>
 
         <div className="flex flex-col gap-4">
-          {ratingsData.map ((rating, index) => (
-            <div key={index} className="p-4  ">
+          {currentData.map((item) => (
+            <div key={item.property._id} className="p-4">
               <div className="flex justify-between items-center mb-1">
-                <h3 className="font-semibold text-md">{rating.property}</h3>
+                <h3 className="font-semibold text-md">{item.property.title}</h3>
                 <span className="text-sm text-zinc-500">
-                  by {rating.member}
+                  {item.ratings.length ? `by ${item.ratings[0].member}` : ""}
                 </span>
               </div>
-              <Rating value={rating.rating} />
-              <p className="text-sm text-zinc-700 mt-1 italic">
-                "{rating.comment}"
-              </p>
+              
+              {item.ratings.length ? (
+                <>
+                  <Rating value={item.ratings[0].rating} />
+                  <p className="text-sm text-zinc-700 mt-1 italic">
+                    "{item.ratings[0].comment}"
+                  </p>
+                </>
+              ) : (
+                <p className="text-sm text-green-600 mt-2">
+                  No ratings yet. Be the first to rate this property!
+                </p>
+              )}
             </div>
           ))}
         </div>

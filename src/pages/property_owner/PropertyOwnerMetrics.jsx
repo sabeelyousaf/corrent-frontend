@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 
 import PropertyMetricsTable
   from '../../components/property_owner/PropertyMetricsTable';
@@ -9,6 +9,9 @@ import TimeToFlip from '../../components/property_owner/TimeToFlip';
 import PendingRooms from '../../components/property_owner/PendingRooms';
 import Listing from '../../components/property_owner/Listing';
 import Downloads from '../../components/property_owner/Downloads';
+import {propertyApi} from '../../api/property';
+import {useSelector} from 'react-redux';
+import { userApi } from '../../api/user';
 
 const mockData = [
   {
@@ -48,9 +51,16 @@ const itemsPerPage = 3;
 const PropertyOwnerMetrics = () => {
   const [search, setSearch] = useState ('');
   const [sortColumn, setSortColumn] = useState (null);
+  const [scoringData, setScoringData] = useState ([]);
+const [ratingList, setRatingList] = useState ([]);
+  const [tenureData, setTenureData] = useState ([]);
+
+
+
   const [sortOrder, setSortOrder] = useState ('asc');
   const [currentPage, setCurrentPage] = useState (1);
   const [filter, setFilter] = useState ('property_scores');
+  const user = useSelector (state => state.auth.user);
 
   const handleSearch = e => {
     setSearch (e.target.value);
@@ -105,6 +115,41 @@ const PropertyOwnerMetrics = () => {
     {label: 'Downloads', value: 'downloads'},
   ];
 
+  const fetchPropertyScores = async () => {
+    try {
+      const res = await propertyApi.all ();
+      setScoringData (res?.properties);
+    } catch (error) {
+      console.error ('Failed to fetch property scores:', error);
+    }
+  };
+
+  
+    const fetchRatingProperties = async () => {
+    try {
+      const res = await propertyApi.rating ();
+      setRatingList (res?.properties);
+    } catch (error) {
+      console.error ('Failed to fetch property scores:', error);
+    }
+  };
+
+ 
+  const fetchTenure = async () => {
+    try {
+      const res = await userApi.tenure ();
+      setTenureData (res);
+    } catch (error) {
+      console.error ('Failed to fetch property scores:', error);
+    }
+  };
+
+useEffect (() => {
+    fetchTenure();
+    fetchRatingProperties();
+    fetchPropertyScores ();
+  }, []);
+
   return (
     <section className="w-full">
       <div className="w-full grid grid-cols-8 gap-2 mb-4">
@@ -120,24 +165,14 @@ const PropertyOwnerMetrics = () => {
       </div>
 
       {filter === 'property_scores' &&
-        <PropertyMetricsTable
-          currentData={currentData}
-          search={search}
-          handleSearch={handleSearch}
-          handleSort={handleSort}
-          sortColumn={sortColumn}
-          sortOrder={sortOrder}
-          currentPage={currentPage}
-          totalPages={totalPages}
-          handlePageChange={handlePageChange}
-        />}
+        <PropertyMetricsTable currentData={scoringData} />}
 
       {filter === 'members_rating'
-        ? <MemberRatings />
+        ? <MemberRatings currentData={ratingList}/>
         : filter === 'occupancy'
             ? <Occupancy />
             : filter === 'tenure'
-                ? <Tenure />
+                ? <Tenure currentData={tenureData}/>
                 : filter === 'time_to_flip'
                     ? <TimeToFlip />
                     : filter === 'pending_rooms'

@@ -35,17 +35,9 @@ const PublicOnlyRoute = ({isAuthenticated, user, children}) => {
         <Navigate to="/admin/dashboard" state={{from: location}} replace />
       );
     case 'property_owner':
-      return (
-        <Navigate
-          to="/property-owner/dashboard"
-          state={{from: location}}
-          replace
-        />
-      );
+      return <Navigate to="/dashboard" state={{from: location}} replace />;
     case 'finance':
-      return (
-        <Navigate to="/finance/dashboard" state={{from: location}} replace />
-      );
+      return <Navigate to="/dashboard" state={{from: location}} replace />;
     case 'seller':
       return (
         <Navigate to="/seller/dashboard" state={{from: location}} replace />

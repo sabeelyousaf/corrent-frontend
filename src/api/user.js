@@ -118,5 +118,22 @@ export const userApi = {
       throw error || { message: "Failed to update password" };
     }
     },
+    earning: async () => {
+    try {
+      const response = await axiosInstance.get(ENDPOINTS.USER.earning);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: "property fetch failed" };
+    }
+  },
+   tenure: async () => {
+    try {
+      const response = await axiosInstance.get(ENDPOINTS.USER.tenure);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: "property fetch failed" };
+    }
+  },
+
 
 };

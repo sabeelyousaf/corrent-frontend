@@ -43,6 +43,7 @@ const App = () => {
     };
   }, []);
 
+  
   return (
      <Elements stripe={stripePromise}>
     <Router>
@@ -67,19 +68,29 @@ const App = () => {
                   }
                 />
               ))}
-
-               {propertyOwnerRoutes.map((r, index) => (
-                <Route key={index} path={r.path} element={<PrivateRoute  isAuthenticated={isAuthenticated && user && user.role === "property_owner"} redirect={"/"} >
-                  <PropertyOwnerSidebar user={user} component={r.element} title={r.title} />
-                </PrivateRoute>} />
-              ))}
+              {propertyOwnerRoutes.map((r, index) => (
+  <Route
+    key={index}
+    path={r.path}
+    element={
+      <PrivateRoute
+        isAuthenticated={
+          isAuthenticated &&
+          user &&
+          (user.role === "property_owner" || user.role === "finance")
+        }
+        redirect={"/"}
+      >
+        <PropertyOwnerSidebar user={user} component={r.element} title={r.title} />
+      </PrivateRoute>
+    }
+  />
+))}
 
               {tenantRoutes.map((r, index) => (
                 <Route key={index} path={r.path} element={<r.element user={user} />} />
               ))}
-
               <Route path="/property/:roomId" element={<PropertyDetails />} />
-
             </Routes>
             <Footer isAuthenticated={isAuthenticated} user={user} />
           </>

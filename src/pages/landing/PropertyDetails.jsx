@@ -33,7 +33,7 @@ const PropertyDetails = () => {
       setLoading(true);
       const response = await roomApi.get(id);
       setRoom(response?.room);
-      return response?.room?._id; // Return room ID for chaining
+      return response?.room?._id; 
     } catch (error) {
       console.error("Error fetching room:", error);
     } finally {

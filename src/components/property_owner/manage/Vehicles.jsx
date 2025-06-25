@@ -6,6 +6,7 @@ import PropertyIncomeCards from '../../dashboard/PropertyIncomeCards';
 import PropertyAdjustmentCard from '../../dashboard/PropertyAdjustmentCard';
 import { Link } from 'react-router-dom';
 import { assets } from '../../../../constants';
+import { useSelector } from 'react-redux';
 
 
 const images = [
@@ -17,6 +18,7 @@ const images = [
 const Vehicles = () => {
     const [currentImage, setCurrentImage] = useState(0);
     const [fade, setFade] = useState(false);
+    const user = useSelector((state) => state.auth.user);
 
     const nextImage = () => {
         setFade(true);
@@ -91,7 +93,9 @@ const Vehicles = () => {
             <div className='my-4'>
                 <div className='flex items-center justify-between'>
                     <h2 className='font-semibold text-lg'>Registered Vehicles</h2>
+                     {user?.role === 'property_owner' && (
                     <Link className='btn text-sm !px-4'>Add Vehicle</Link>
+                      )}
                 </div>
                 <div className='w-full grid grid-cols-2 gap-4 mt-2'>
                     <div className='w-full bg-white rounded-lg p-4 h-[150px] flex items-center justify-between'>
