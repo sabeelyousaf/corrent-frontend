@@ -7,8 +7,8 @@ export const propertyApi = {
   create: async (payload) => {
     try {
       const response = await axiosInstance.post(
-        ENDPOINTS.PROPERTY.create, 
-        payload
+        ENDPOINTS.PROPERTY.create,
+        payload 
       );
       return response.data;
     } catch (error) {
