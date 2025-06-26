@@ -363,7 +363,7 @@ const PropertyOwnerManage = () => {
     {user?.role === 'property_owner' && (
       <>
         <Link 
-          to={`/property-owner/manage/property/${item._id}/edit`}
+          to={`/manage/property/${item._id}/edit`}
           className="text-gray-600 hover:text-black"
         >
           <MdOutlineEdit className='text-xl' />

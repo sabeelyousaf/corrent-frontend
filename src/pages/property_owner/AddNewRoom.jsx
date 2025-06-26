@@ -139,53 +139,52 @@ const AddNewRoom = () => {
     }));
   };
 
- const handleFormSubmit = async e => {
-    e.preventDefault();
-    setLoading(true);
+const handleFormSubmit = async (e) => {
+  e.preventDefault();
+  setLoading(true);
 
-    try {
-      const formData = new FormData();
-      
-      // Create data object matching payload structure
-      const payload = {
-        propertyId: roomData.propertyId,
-        roomTitle: roomData.roomTitle,
-        roomType: roomData.roomType,
-        size: roomData.size,
-        apartment: roomData.apartment,
-        minimumStay: roomData.minimumStay,
-        description: roomData.description,
-        amenities: roomData.amenities,
-        bedroom: roomData.bedroom,
-        suitableFors: roomData.suitableFors,
-        pricePerMonth: roomData.pricePerMonth,
-        differentMonthlyValue: roomData.differentMonthlyValue,
-        differentMonthlyPrices: roomData.differentMonthlyValue 
-          ? roomData.differentMonthlyPrices 
-          : undefined,
-        deposit: roomData.deposit,
-        mechanicalLock: roomData.mechanicalLock
-      };
+  try {
+    const formData = new FormData();
 
-      // Append JSON data as separate field
-      formData.append('data', JSON.stringify(payload));
-      
-      // Append images
-      roomImages.forEach(file => {
-        formData.append('files', file);
-      });
+    // Append primitive and stringified fields
+    formData.append('propertyId', roomData.propertyId);
+    formData.append('roomTitle', roomData.roomTitle);
+    formData.append('roomType', roomData.roomType);
+    formData.append('size', roomData.size || '');
+    formData.append('apartment', roomData.apartment || '');
+    formData.append('minimumStay', roomData.minimumStay || 0);
+    formData.append('description', roomData.description || '');
+    formData.append('pricePerMonth', roomData.pricePerMonth);
+    formData.append('differentMonthlyValue', roomData.differentMonthlyValue);
 
-      // Call API
-      const response = await roomApi.create(formData);
-      toast.success('Room added successfully!');
-      navigate('/property-owner/manage');
-    } catch (error) {
-      console.error('Add room error:', error);
-      toast.error(error.response?.data?.message || 'Failed to add room');
-    } finally {
-      setLoading(false);
+    formData.append('deposit', roomData.deposit || 0);
+    formData.append('mechanicalLock', roomData.mechanicalLock || '');
+
+    // Stringify complex objects
+    formData.append('amenities', JSON.stringify(roomData.amenities || []));
+    formData.append('bedroom', JSON.stringify(roomData.bedroom || {}));
+    formData.append('suitableFors', JSON.stringify(roomData.suitableFors || []));
+    if (roomData.differentMonthlyValue) {
+      formData.append('differentMonthlyPrices', JSON.stringify(roomData.differentMonthlyPrices || {}));
     }
-  };
+
+    // Append images
+    roomImages.forEach((file) => {
+      formData.append ('images', file);
+    });
+
+    // Call API
+    const response = await roomApi.create(formData);
+    toast.success('Room added successfully!');
+    navigate('/manage');
+  } catch (error) {
+    console.error('Add room error:', error);
+    toast.error(error.response?.data?.message || 'Failed to add room');
+  } finally {
+    setLoading(false);
+  }
+};
+
   const bedroomItems = Object.keys(roomData.bedroom);
   
   // Updated to match enum values

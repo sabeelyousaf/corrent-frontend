@@ -65,9 +65,7 @@ const locations = countries.map((val, index) => ({
                 <button className="w-[115px] h-[40px] rounded-tl-md bg-accent_blue hover:bg-accent_blue_dark text-white font-medium text-sm cursor-pointer">
                   Rent
                 </button>
-                <button className="w-[115px] h-[40px] rounded-tr-md bg-accent_red hover:bg-accent_red_dark text-white font-medium text-sm cursor-pointer">
-                  Buy
-                </button>
+              
               </div>
 
               <form onSubmit={handleSearch} className="w-full p-4 bg-white rounded-b-lg rounded-tr-lg flex flex-col gap-2">

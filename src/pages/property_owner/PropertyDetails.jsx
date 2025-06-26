@@ -92,7 +92,7 @@ const PropertyDetails = () => {
 
         <div className="flex items-center gap-2 w-full md:w-auto">
   {user?.role === 'property_owner' && (
-          <Link to={`/property-owner/manage/room/add`} className="btn !text-sm">
+          <Link to={`/manage/room/add`} className="btn !text-sm">
             Add Room
           </Link>
   )}
