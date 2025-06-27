@@ -6,10 +6,7 @@ const LogoAccent = () => {
   return (
     <Link to={'/'}>
       <div className="logo flex items-center gap-2">
-        <img className="w-8" src={assets.logo} alt="" />
-        <p className="text-lg font-semibold text-shadow-accent_blue_dark">
-          Corrent
-        </p>
+        <img className="w-[40%]" src={assets.logo} alt="" />
       </div>
     </Link>
   );

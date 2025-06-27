@@ -2,10 +2,12 @@ import React, {useState, useRef, useEffect} from 'react';
 import LogoAccent from './LogoAccent';
 import {GoHome} from 'react-icons/go';
 import {Link, useLocation, useNavigate} from 'react-router-dom';
-import {VscGraphLine} from 'react-icons/vsc';
-import {FaRegStickyNote} from 'react-icons/fa';
-import {LuCircleDollarSign} from 'react-icons/lu';
-import {IoLayersOutline} from 'react-icons/io5';
+import { VscGraphLine } from 'react-icons/vsc';
+import { FaRegStickyNote, FaTools } from 'react-icons/fa';
+import { LuCircleDollarSign, LuBot, LuMegaphone } from 'react-icons/lu';
+import { IoLayersOutline, IoFlashOutline } from 'react-icons/io5';
+import { MdOutlineCameraOutdoor, MdOutlineManageAccounts } from 'react-icons/md';
+import { TbToolsKitchen2 } from 'react-icons/tb';
 import {LuUserSearch} from 'react-icons/lu';
 import {IoChatboxEllipses} from 'react-icons/io5';
 import {IoMdNotifications} from 'react-icons/io';
@@ -68,31 +70,51 @@ const PropertyOwnerSidebar = ({component: Component, title, user}) => {
 
             <div className="my-1">
               {[
-                {
-                  path: '/metrics',
-                  icon: VscGraphLine,
-                  label: 'Metrics',
-                },
-                {
-                  path: '/manage',
-                  icon: FaRegStickyNote,
-                  label: 'Manage',
-                },
-                {
-                  path: '/earnings',
-                  icon: LuCircleDollarSign,
-                  label: 'Earnings',
-                },
-                {
-                  path: '/resources',
-                  icon: IoLayersOutline,
-                  label: 'Resources',
-                },
-                {
-                  path: '/refer-host',
-                  icon: LuUserSearch,
-                  label: 'Refer a Host',
-                },
+             {
+    path: '/metrics',
+    icon: VscGraphLine,
+    label: 'Metrics',
+  },
+  {
+    path: '/manage',
+    icon: FaRegStickyNote,
+    label: 'Manage',
+  },
+  {
+    path: '/earnings',
+    icon: LuCircleDollarSign,
+    label: 'Earnings',
+  },
+  {
+    path: '/resources',
+    icon: IoLayersOutline,
+    label: 'Resources',
+  },
+  {
+    path: '/smart-locks',
+    icon: MdOutlineCameraOutdoor,
+    label: 'Smart Locks & Cameras',
+  },
+  {
+    path: '/utilities-expense',
+    icon: TbToolsKitchen2,
+    label: 'Utilities & Expense',
+  },
+  {
+    path: '/host-dashboard',
+    icon: MdOutlineManageAccounts,
+    label: 'Host Management',
+  },
+  {
+    path: '/marketing-managment',
+    icon: LuMegaphone,
+    label: 'Marketing Management',
+  },
+  {
+    path: '/ai-tools',
+    icon: LuBot,
+    label: 'AI Tools',
+  },
               ].map ((r, index) => (
                 <Link
                   to={r.path}
@@ -117,10 +139,10 @@ const PropertyOwnerSidebar = ({component: Component, title, user}) => {
           <h3 className="text-base font-medium">{title}</h3>
 
           <div className="flex items-center gap-3">
-            <Link>
+            <Link to="/chat">
               <IoChatboxEllipses className="text-xl text-zinc-800" />
             </Link>
-            <Link>
+            <Link to="/notifications">
               <IoMdNotifications className="text-xl text-zinc-800" />
             </Link>
 

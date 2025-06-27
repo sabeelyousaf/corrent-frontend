@@ -1,7 +1,7 @@
 'use client';
 import React, {useState} from 'react';
 
-export default function Tickets () {
+export default function HostDashboard () {
   const [isLoading, setIsLoading] = useState (true);
   const handleLoad = () => {
     setIsLoading (false);
@@ -13,7 +13,7 @@ export default function Tickets () {
           <div className="w-12 h-12 border-4 border-red-500 border-t-transparent rounded-full animate-spin" />
         </div>}
       <iframe
-        src="https://tenant-owner-guides.lovable.app/"
+        src="https://padsplit-command-center.lovable.app/"
         onLoad={handleLoad}
         className="w-full h-full border-0"
       />

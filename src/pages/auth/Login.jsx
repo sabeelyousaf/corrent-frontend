@@ -75,21 +75,18 @@ const Login = () => {
     <div className="container mx-auto py-5 px-10">
       <section className="w-full h-screen grid grid-col-1 lg:grid-cols-2 ">
         <div className="w-full md:w-[60%] mx-auto">
-          <div className="w-full   flex items-center justify-between">
+          <div className="w-full flex items-center justify-between">
             <LogoAccent />
             <a href="/" className="text-accent_blue font-medium text-sm">
               Back To Home
             </a>
           </div>
-
           <form onSubmit={handleSubmit}>
             <div className="mb-4 mt-20">
               <h2 className="text-3xl font-semibold text-accent_blue_dark">
                 Login
               </h2>
-
             </div>
-
             <div className="flex flex-col gap-4">
               <div>
                 <label htmlFor="email">
@@ -108,7 +105,6 @@ const Login = () => {
                 {errors.email &&
                   <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
               </div>
-
               <div>
                 <label htmlFor="password">
                   <span className="text-sm font-medium text-primary_text inline-block mb-1">
@@ -191,7 +187,6 @@ const Login = () => {
             src="/src/assets/images/banners/authbanner.jpg"
             alt=""
           />
-
         </div>
       </section>
     </div>

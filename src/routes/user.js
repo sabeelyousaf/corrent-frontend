@@ -10,7 +10,9 @@ import CheckoutPage from "../pages/landing/Checkout";
 import Contact from "../pages/landing/Contact";
 import Home from "../pages/landing/Home";
 import PropertyDetails from "../pages/landing/PropertyDetails";
+import InvestmentTools from "../pages/tennant/InvestmentTools";
 import RoomApplication from "../pages/tennant/RoomApplication";
+import Tickets from "../pages/tennant/Tickets";
 
 export const userRoutes = [
   {
@@ -95,5 +97,15 @@ export const tenantRoutes = [
     title: "Room Applications",
     path: "/tenant/room-applications",
     element: RoomApplication,
+  },
+   {
+    title: "Tickets",
+    path: "/tenant/tickets",
+    element: Tickets,
+  },
+   {
+    title: "Investment Tools",
+    path: "/investment-tools",
+    element: InvestmentTools,
   },
 ];
