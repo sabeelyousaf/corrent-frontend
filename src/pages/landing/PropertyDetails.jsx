@@ -170,21 +170,23 @@ const PropertyDetails = () => {
           <div className='w-full h-full flex-1 flex flex-col gap-4'>
             <div className="flex items-center gap-2 h-[500px]">
               <div className='flex-1 h-full'>
-                <img 
-                  className='w-full rounded-lg h-full object-center object-cover' 
-                  src={room.images?.[0]?.url || "https://picsum.photos/1000/1000"} 
-                  alt="Main" 
-                />
+               <img 
+  className='w-full rounded-lg h-full object-center object-cover' 
+  src={room.images?.[0] || "https://picsum.photos/1000/1000"} 
+  alt="Main" 
+/>
+
               </div>
               <div className='w-[450px] h-full flex flex-col gap-2'>
-                {room.images?.slice(1, 5).map((image, index) => (
-                  <img 
-                    key={index}
-                    className='rounded-lg h-[100px] flex-1 object-center object-cover' 
-                    src={image.url || "https://picsum.photos/1000/1000"} 
-                    alt={`Thumbnail ${index}`} 
-                  />
-                ))}
+              {room.images?.slice(1, 5).map((image, index) => (
+  <img 
+    key={index}
+    className='rounded-lg h-[100px] flex-1 object-center object-cover' 
+    src={image || "https://picsum.photos/1000/1000"} 
+    alt={`Thumbnail ${index}`} 
+  />
+))}
+
               </div>
             </div>
 

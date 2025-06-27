@@ -157,7 +157,7 @@ const imagesData = [
                             <div className='h-full flex items-center gap-4'>
                                 {room.images && room.images.length > 0 ? (
                                     <img 
-                                        src={room.images[0].url} 
+                                        src={room.images[0]} 
                                         alt={room.roomTitle} 
                                         className='w-[120px] md:w-[200px] h-full rounded-lg object-cover object-center' 
                                     />

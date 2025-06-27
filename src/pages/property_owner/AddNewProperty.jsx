@@ -1,5 +1,5 @@
 'use client';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import toast from 'react-hot-toast';
 import {useNavigate} from 'react-router-dom';
 
@@ -8,6 +8,7 @@ import ImageUploader from '../../components/ImageUploader';
 import Loader from '../../components/Loader';
 import {propertyApi} from '../../api/property';
 import {FiHome, FiMapPin, FiMinus, FiPlus} from 'react-icons/fi';
+import { countryApi } from '../../api/country';
 
 const CheckboxGroup = ({title, items, values, onChange}) => (
   <div className="w-full flex flex-col">
@@ -77,6 +78,26 @@ const AddNewProperty = () => {
   });
   const [propertyImages, setPropertyImages] = useState ([]);
 
+   const [countries, setCountries] = useState([]);
+
+    const fetchCountries = async () => {
+      try {
+        const res = await countryApi.list();
+        setCountries(res?.countries || []);
+        console.log(res?.countries, 'Fetched countries');
+      } catch (error) {
+        console.error('Error fetching countries:', error);
+      }
+    };
+  
+    useEffect(() => {
+      fetchCountries();
+    }, []);
+
+     const handleCountryChange = (e) => {
+    setCountry(e.target.value);
+  };
+
   const handleBathroomChange = (index, key) => {
     const newBathrooms = [...bathrooms];
     newBathrooms[index][key] = !newBathrooms[index][key];
@@ -93,6 +114,12 @@ const AddNewProperty = () => {
 
   const handleFormSubmit = async e => {
     e.preventDefault ();
+
+    if (propertyImages.length === 0) {
+      toast.error ('Please upload at least one image before submitting.');
+      return;
+    }
+
     setLoading (true);
 
     try {
@@ -104,7 +131,6 @@ const AddNewProperty = () => {
       formData.append ('billsIncludedUpTo', billsIncludedUpTo);
       formData.append ('numberOfBathrooms', numberOfBathrooms);
       formData.append ('status', 'available');
-
       formData.append (
         'bathrooms',
         JSON.stringify (bathrooms.slice (0, numberOfBathrooms))
@@ -119,9 +145,10 @@ const AddNewProperty = () => {
 
       const res = await propertyApi.create (formData);
       toast.success ('Property added successfully!');
-      console.log ('Property created successfully', res);
+      navigate (-1); // 👈 Go back to previous page
     } catch (err) {
       console.error ('Error:', err);
+      toast.error ('Failed to add property.');
     } finally {
       setLoading (false);
     }
@@ -204,14 +231,17 @@ const AddNewProperty = () => {
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                       Country
                     </label>
-                    <input
-                      type="text"
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      value={country}
-                      onChange={e => setCountry (e.target.value)}
-                      placeholder="e.g., Dubai"
-                      required
-                    />
+                     <select
+            value={country}
+            onChange={handleCountryChange}
+            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            required
+          >
+            <option value="" disabled>Select a country</option>
+            {countries.map(c => (
+              <option key={c.id} value={c.name}>{c.name}</option>
+            ))}
+          </select>
                   </div>
                 </div>
 
@@ -340,22 +370,26 @@ const AddNewProperty = () => {
                 Back
               </button>}
 
-            <button
-              type={activeTab === 'media' ? 'submit' : 'button'}
-              className="btn bg-blue-600 hover:bg-blue-700 text-white ml-auto"
-              onClick={() => {
-                if (activeTab !== 'media') {
-                  const tabs = ['basic', 'details', 'media'];
-                  setActiveTab (tabs[tabs.indexOf (activeTab) + 1]);
-                }
-              }}
-              disabled={loading}
-            >
-              {activeTab === 'media'
-                ? loading ? 'Creating...' : 'Add Property'
-                : 'Continue'}
-            </button>
+            {activeTab === 'media'
+              ? <button
+                  type="submit"
+                  className="btn bg-blue-600 hover:bg-blue-700 text-white ml-auto"
+                  disabled={loading}
+                >
+                  {loading ? 'Creating...' : 'Add Property'}
+                </button>
+              : <button
+                  type="button"
+                  className="btn bg-blue-600 hover:bg-blue-700 text-white ml-auto"
+                  onClick={() => {
+                    const tabs = ['basic', 'details', 'media'];
+                    setActiveTab (tabs[tabs.indexOf (activeTab) + 1]);
+                  }}
+                >
+                  Continue
+                </button>}
           </div>
+
         </div>
 
         {/* Location Section - Always visible on desktop, tabbed on mobile */}
