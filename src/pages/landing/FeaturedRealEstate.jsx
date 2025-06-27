@@ -41,7 +41,7 @@ const FeaturedRealEstate = () => {
                                 key={room._id}
                                 id={room._id}
                                 slug={room?.slug}
-                                image={ "https://picsum.photos/1000/1000"}
+                                image={room.images?.[0] || "https://via.placeholder.com/1000"} 
                                 title={room.roomTitle}
                                 location={room.apartment || "Location not specified"}
                                 price={room.pricePerMonth}
