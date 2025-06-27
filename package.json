@@ -23,6 +23,7 @@
     "gsap": "^3.13.0",
     "locomotive-scroll": "^5.0.0-beta.21",
     "lottie-react": "^2.4.1",
+    "lucide-react": "^0.523.0",
     "react": "^19.1.0",
     "react-calendly": "^4.4.0",
     "react-data-table-component": "^7.7.0",

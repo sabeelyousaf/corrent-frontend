@@ -1,6 +1,6 @@
 import bg from "./src/assets/bg.jpg";
 import bg_2 from "./src/assets/bg_2.png";
-import logo from "./src/assets/logo.svg";
+import logo from "./src/assets/logo.jpg";
 import google from "./src/assets/google.png";
 import facebook from "./src/assets/facebook.png";
 import logo_white from "./src/assets/logo_white.svg";

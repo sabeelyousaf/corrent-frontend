@@ -68,6 +68,8 @@ const NavDropDown = ({ user }) => {
         {[
           { label: "Account", icon: MdOutlineAccountCircle, path: "/account" },
           { label: "Room Applications", icon: FaWpforms, path: "/tenant/room-applications" },
+          { label: "Ticket System", icon: FaWpforms, path: "/tenant/tickets" },
+
         ].map((r, index) => (
           <Link
             key={index}

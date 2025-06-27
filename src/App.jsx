@@ -17,6 +17,7 @@ import { propertyOwnerRoutes } from './routes/property_owner';
 import PropertyOwnerSidebar from './components/PropertyOwnerSidebar';
 import PrivateRoute from './components/PrivateRoute';
 import PropertyDetails from './pages/landing/PropertyDetails';
+import FloatingChatbot from './components/FloatingChatbot';
 const stripePromise = loadStripe("pk_test_51RPfqZ2aUC47vuEFt34ADy7HRM3tjgy9ttk6VW1Hbbne7u2yaZwd3Jdg7qWM4vqEdeSTbCi880J9ryu5lZh0jI8Z00OL3yLLQq");
 const App = () => {
   const { isAuthenticated, loading, error, message } = useSelector((state) => state.auth);
@@ -97,6 +98,7 @@ const App = () => {
         <Toaster />
       </div>
     </Router>
+     <FloatingChatbot />
      </Elements>
   );
 };

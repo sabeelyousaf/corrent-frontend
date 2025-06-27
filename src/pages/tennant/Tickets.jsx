@@ -13,7 +13,7 @@ export default function Tickets () {
           <div className="w-12 h-12 border-4 border-red-500 border-t-transparent rounded-full animate-spin" />
         </div>}
       <iframe
-        src="https://tenant-owner-guides.lovable.app/"
+        src="https://blue-wave-tickets-tasks.lovable.app/"
         onLoad={handleLoad}
         className="w-full h-full border-0"
       />

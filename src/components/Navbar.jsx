@@ -5,6 +5,8 @@ import { TbHomeDollar } from "react-icons/tb";
 import { FaRegUser, FaTimes, FaBars } from "react-icons/fa";
 import LogoAccent from './LogoAccent';
 import NavDropDown from './NavDropDown';
+import {assets} from '../../constants';
+
 
 const Navbar = ({ isAuthenticated, user }) => {
     const location = useLocation();
@@ -18,20 +20,24 @@ const Navbar = ({ isAuthenticated, user }) => {
     const navLinks = [
         { title: "Home", path: "/" },
         { title: "Property", path: "/property" },
+        { title: "Investment Tools", path: "/investment-tools" },
         { title: "Contact", path: "/contact" }
     ];
 
 
     return (
         <header className={`${shouldHideNavbar ? "hidden" : ""} w-full shadow-sm bg-white fixed top-0 left-0 z-30`}>
-            <nav className='container mx-auto flex items-center justify-between p-4'>
+            <nav className='container mx-auto grid grid-cols-3 items-center gap-4 p-4'>
                 {/* Logo */}
-                <div className='flex items-center'>
-                    <LogoAccent />
+                <div className='flex items-center col-span-1'>
+                    <Link to={'/'}>
+                        <div className="logo flex items-center gap-2">
+                          <img className="w-[30%]" src={assets.logo} alt="" />
+                        </div>
+                    </Link>
                 </div>
-
                 {/* Desktop Navigation */}
-                <div className='hidden lg:flex flex-1 items-center justify-center gap-8'>
+                <div className='hidden lg:flex items-center justify-center gap-8 col-span-1'>
                     {navLinks.map((r, index) => (
                         <Link 
                             to={r.path} 
@@ -42,9 +48,8 @@ const Navbar = ({ isAuthenticated, user }) => {
                         </Link>
                     ))}
                 </div>
-
                 {/* Desktop Auth Section */}
-                <div className='hidden lg:flex items-center gap-4 justify-end'>
+                <div className='hidden lg:flex items-center gap-4 justify-end col-span-1'>
                     {isAuthenticated ? (
                         <NavDropDown user={user} />
                     ) : (
@@ -58,7 +63,6 @@ const Navbar = ({ isAuthenticated, user }) => {
                         <span>Rent Property</span>
                     </button>
                 </div>
-
                 {/* Mobile Menu Button */}
                 <button 
                     className="lg:hidden text-2xl text-gray-700 focus:outline-none"
@@ -68,7 +72,6 @@ const Navbar = ({ isAuthenticated, user }) => {
                     <FaBars />
                 </button>
             </nav>
-
             {/* Full-width Mobile Offcanvas Menu */}
             <div className={`fixed inset-0 h-full w-full bg-white z-50 transform transition-transform duration-300 ease-in-out lg:hidden ${
                 showOffcanvas ? 'translate-x-0' : 'translate-x-full'
@@ -85,7 +88,6 @@ const Navbar = ({ isAuthenticated, user }) => {
                             <FaTimes className="text-2xl" />
                         </button>
                     </div>
-
                     {/* Scrollable content area */}
                     <div className="flex-1 overflow-y-auto p-4">
                         {/* Navigation Links */}
