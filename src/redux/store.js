@@ -27,5 +27,6 @@ export const store = configureStore({
 
 export const persistor = persistStore(store);
 
-export const server = "http://localhost:4000/api/v1";
+export const server = import.meta.env.VITE_API_BASE_URL;
+
 // export const server = "https://corrent-backend.onrender.com/api/v1";
