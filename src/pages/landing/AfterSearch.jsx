@@ -223,7 +223,7 @@ const AfterSearch = () => {
                   ? rooms.map((room,index) => <Property
   id={index}
   slug={room?.slug}
-  image="https://www.shutterstock.com/shutterstock/photos/2157520005/display_1500/stock-photo-empty-interior-room-d-illustration-2157520005.jpg"
+    image={room.images?.[0] || "https://via.placeholder.com/1000"} 
   title={room?.roomTitle}
   price={room?.pricePerMonth}
   address={room?.location?.address}
