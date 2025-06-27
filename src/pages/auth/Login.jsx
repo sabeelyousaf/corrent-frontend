@@ -184,7 +184,7 @@ const Login = () => {
         <div className="flex-1 h-full  overflow-hidden">
           <img
             className="w-full h-[95vh] rounded-lg object-center object-cover"
-            src="/src/assets/images/banners/authbanner.jpg"
+            src="/assets/images/banners/authbanner.jpg"
             alt=""
           />
         </div>
