@@ -1,9 +1,12 @@
-import React, { useState } from "react";
+import React from "react";
 
-const ToggleSwitch = () => {
-    const [isRooms, setIsRooms] = useState(false);
+const ToggleSwitch = ({isRooms, setIsRooms, fetchRooms}) => {
 
-    const toggle = () => setIsRooms(!isRooms);
+    const toggle = () => {
+        setIsRooms(!isRooms)
+        if (!isRooms)fetchRooms();
+    }
+    ;
 
     return (
         <div className="flex items-center gap-4 font-semibold text-gray-700">

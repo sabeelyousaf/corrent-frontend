@@ -1,7 +1,7 @@
 'use client';
 import React, {useEffect, useState} from 'react';
 import toast from 'react-hot-toast';
-import {useNavigate} from 'react-router-dom';
+import {useNavigate, useParams} from 'react-router-dom';
 
 import Map from '../../components/Map';
 import ImageUploader from '../../components/ImageUploader';
@@ -37,13 +37,15 @@ const AddNewProperty = () => {
   const navigate = useNavigate ();
   const [loading, setLoading] = useState (false);
   const [activeTab, setActiveTab] = useState ('basic');
-  // Form state
+  const {id} = useParams();
+  const [property, setProperty] = useState (null);
   const [title, setTitle] = useState ('');
   const [size, setSize] = useState ('');
   const [country, setCountry] = useState ('');
   const [membersCapacity, setMembersCapacity] = useState (1);
   const [billsIncludedUpTo, setBillsIncludedUpTo] = useState (0);
   const [numberOfBathrooms, setNumberOfBathrooms] = useState (1);
+
   const [bathrooms, setBathrooms] = useState ([
     {toilet: false, shower: false, bath: false, sink: false},
   ]);
@@ -77,6 +79,68 @@ const AddNewProperty = () => {
     address: '',
   });
   const [propertyImages, setPropertyImages] = useState ([]);
+  const tabs = ['basic', 'details', 'media'];
+
+  useEffect (
+    () => {
+      const fetchProperty = async () => {
+        try {
+          setLoading (true);
+          const res = await propertyApi.get (id);
+          setProperty (res.property);
+        } catch (error) {
+          console.error ('Error fetching property:', error);
+          toast.error ('Failed to load property details');
+        } finally {
+          setLoading (false);
+        }
+      };
+
+      if (id) fetchProperty ();
+    },
+    [id]
+  );
+
+  useEffect(() => {
+    setBathrooms(prev => {
+      const diff = numberOfBathrooms - prev.length;
+      if (diff > 0) {
+        return [
+          ...prev,
+          ...Array.from({ length: diff }, () => ({
+            toilet: false,
+            shower: false,
+            bath: false,
+            sink: false,
+          }))
+        ];
+      } else if (diff < 0) {
+        return prev.slice(0, numberOfBathrooms);
+      }
+      return prev;
+    });
+  }, [numberOfBathrooms]);
+  
+  useEffect(() => {
+    if (property) {
+      setTitle(property.title || '');
+      setSize(property.size || '');
+      setCountry(property.country || '');
+      setMembersCapacity(property.membersCapacity || 1);
+      setBillsIncludedUpTo(property.billsIncludedUpTo || 0);
+      setNumberOfBathrooms(property.numberOfBathrooms || 1);
+      setBathrooms(
+        property.bathrooms.length > 0 
+          ? property.bathrooms 
+          : [{ toilet: false, shower: false, bath: false, sink: false }]
+      );
+      setKitchen(property.kitchen || {});
+      setLivingRoom(property.livingRoom || {});
+      setLocation(property.location || { lat: 0, lng: 0, address: '' });
+      setPropertyImages(property.propertyImages || []);
+    }
+  }, [property]);
+  
 
    const [countries, setCountries] = useState([]);
 
@@ -143,12 +207,18 @@ const AddNewProperty = () => {
         formData.append ('images', file);
       });
 
-      const res = await propertyApi.create (formData);
-      toast.success ('Property added successfully!');
-      navigate (-1); // 👈 Go back to previous page
-    } catch (err) {
-      console.error ('Error:', err);
-      toast.error ('Failed to add property.');
+      if (id) {
+        await propertyApi.update(id, formData);
+        toast.success('Edited Property successfully!');
+      } else {
+        await propertyApi.create(formData);
+        toast.success('Property created successfully!');
+      }
+      navigate(-1);
+
+      } catch (error) {
+      console.error ('Create property error:', error);
+      toast.error (error.message || 'Failed to create property');
     } finally {
       setLoading (false);
     }
@@ -315,15 +385,16 @@ const AddNewProperty = () => {
                 </div>
 
                 <div className="space-y-6">
-                  {Array.from ({length: numberOfBathrooms}).map ((_, index) => (
-                    <CheckboxGroup
-                      key={index}
-                      title={`Bathroom ${index + 1}`}
-                      items={bathroomItems}
-                      values={bathrooms[index] || {}}
-                      onChange={key => handleBathroomChange (index, key)}
-                    />
-                  ))}
+                {Array.from({ length: numberOfBathrooms }).map((_, index) => (
+                  <CheckboxGroup
+                    key={index}
+                    title={`Bathroom ${index + 1}`}
+                    items={bathroomItems}
+                    values={bathrooms[index] || { toilet: false, shower: false, bath: false, sink: false }}
+                    onChange={key => handleBathroomChange(index, key)}
+                  />
+                ))}
+
 
                   <CheckboxGroup
                     title="Kitchen"
@@ -370,24 +441,26 @@ const AddNewProperty = () => {
                 Back
               </button>}
 
-            {activeTab === 'media'
-              ? <button
-                  type="submit"
-                  className="btn bg-blue-600 hover:bg-blue-700 text-white ml-auto"
-                  disabled={loading}
-                >
-                  {loading ? 'Creating...' : 'Add Property'}
-                </button>
-              : <button
-                  type="button"
-                  className="btn bg-blue-600 hover:bg-blue-700 text-white ml-auto"
-                  onClick={() => {
-                    const tabs = ['basic', 'details', 'media'];
-                    setActiveTab (tabs[tabs.indexOf (activeTab) + 1]);
-                  }}
-                >
-                  Continue
-                </button>}
+              {activeTab !== 'media' &&
+              <button 
+              type={'button'}
+              className="btn bg-blue-600 hover:bg-blue-700 text-white ml-auto"
+              onClick={() => {
+                  setActiveTab (tabs[tabs.indexOf (activeTab) + 1]);
+              }}
+              disabled={loading}
+            >
+              {'Continue'}
+            </button>}
+
+            {activeTab === 'media' &&
+            <button
+              type={'submit'}
+              className="btn bg-blue-600 hover:bg-blue-700 text-white ml-auto"
+              disabled={loading}
+            >
+              {loading ? 'Creating...' : property? 'Save Edited Property':'Add Property'}
+            </button>}
           </div>
 
         </div>

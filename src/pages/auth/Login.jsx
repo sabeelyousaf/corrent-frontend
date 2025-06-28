@@ -58,9 +58,8 @@ const Login = () => {
 
     try {
       await dispatch (login (formData.email, formData.password));
-      // Reset form on successful login
-      setFormData ({email: '', password: '', remember: false});
     } catch (error) {
+      toast('Failed to login', error)
     } finally {
       setLoading (false);
     }

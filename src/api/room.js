@@ -99,10 +99,10 @@ export const roomApi = {
   },
 
   // Update existing property
-  update: async (id, payload) => {
+  update: async ({id, payload}) => {
     try {
       const response = await axiosInstance.put(
-        ENDPOINTS.ROOM.update(id), 
+        ENDPOINTS.ROOM.update(id),
         payload
       );
       return response.data;

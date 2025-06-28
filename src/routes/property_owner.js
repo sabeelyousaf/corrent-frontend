@@ -46,9 +46,19 @@ export const propertyOwnerRoutes = [
     title: "Add New Property",
   },
   {
+    path: "/manage/property/:id/edit",
+    element: AddNewProperty,
+    title: "Edit A Property",
+  },
+  {
     path: "/manage/room/add",
     element: AddNewRoom,
     title: "Add New Room",
+  },
+  {
+    path: "/manage/room/:slug/edit",
+    element: AddNewRoom,
+    title: "Edit Room",
   },
 
   {

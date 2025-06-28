@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import toast from 'react-hot-toast';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import ImageUploader from '../../components/ImageUploader';
 import { propertyApi } from '../../api/property';
 import { FiHome } from 'react-icons/fi';
-import axios from 'axios';
+// import axios from 'axios';
 import { roomApi } from '../../api/room';
 
 const CheckboxGroup = ({ title, items, values, onChange, type = 'object', labelMap = null }) => (
@@ -34,11 +34,12 @@ const CheckboxGroup = ({ title, items, values, onChange, type = 'object', labelM
 );
 
 const AddNewRoom = () => {
-  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [roomImages, setRoomImages] = useState([]);
   const [properties, setProperties] = useState([]);
-
+    const navigate = useNavigate();
+    const {slug} = useParams();
+    
   // Form state
   const [roomData, setRoomData] = useState({
     propertyId: '',
@@ -82,7 +83,26 @@ const AddNewRoom = () => {
     deposit: 0,
     mechanicalLock: '',
   });
+  
+  const fetchRoom = useCallback(async () => {
+    if (!slug) return;
+    try {
+      setLoading(true);
+      const res = await roomApi.get(slug);
+      setRoomData(res.room)
+    } catch (error) {
+      console.error('Error fetching rooms:', error);
+    } finally {
+      setLoading(false);
+    }
+  }, [slug]);
+  
 
+useEffect(()=>{
+  if (slug) {
+    fetchRoom();
+  }
+},[slug])
   const propertyListing = async () => {
     const res = await propertyApi.all();
     setProperties(res?.properties);
@@ -162,7 +182,7 @@ const handleFormSubmit = async (e) => {
 
     // Stringify complex objects
     formData.append('amenities', JSON.stringify(roomData.amenities || []));
-    formData.append('bedroom', JSON.stringify(roomData.bedroom || {}));
+    formData.append('bedroom', JSON.stringify(roomData?.bedroom || {}));
     formData.append('suitableFors', JSON.stringify(roomData.suitableFors || []));
     if (roomData.differentMonthlyValue) {
       formData.append('differentMonthlyPrices', JSON.stringify(roomData.differentMonthlyPrices || {}));
@@ -174,7 +194,9 @@ const handleFormSubmit = async (e) => {
     });
 
     // Call API
-    const response = await roomApi.create(formData);
+    slug?
+    await roomApi.update({id: roomData._id, payload: formData}):
+    await roomApi.create(formData);
     toast.success('Room added successfully!');
     navigate('/manage');
   } catch (error) {
@@ -185,7 +207,7 @@ const handleFormSubmit = async (e) => {
   }
 };
 
-  const bedroomItems = Object.keys(roomData.bedroom);
+  const bedroomItems = Object.keys(roomData?.bedroom);
   
   // Updated to match enum values
   const suitableForItems = [
@@ -539,7 +561,7 @@ const handleFormSubmit = async (e) => {
             className="btn bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg"
             disabled={loading}
           >
-            {loading ? 'Adding Room...' : 'Add Room'}
+            {loading? slug? 'Saving Edited Room...': 'Adding New Room...' : slug ? 'Save Edited Room' : 'Add Room'}
           </button>
         </div>
       </form>

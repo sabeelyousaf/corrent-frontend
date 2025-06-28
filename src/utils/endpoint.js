@@ -22,7 +22,7 @@ export const ENDPOINTS = {
     uploadImage:`${BASEURL}/profile/image`,
     verifyOTP:`${BASEURL}/verify-otp`,
     resendOTP:`${BASEURL}/resend-otp`,
-    resendOTP:`${BASEURL}/resend-otp`,
+    // resendOTP:`${BASEURL}/resend-otp`,
     forgotpassword:`${BASEURL}/forgot-password`,
     resetPassword:`${BASEURL}/reset-password`,
     earning:`${BASEURL}/earnings`,

@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react'
+import React, { useState, useMemo, useEffect , useCallback} from 'react'
 import { Link } from 'react-router-dom'
 import ToggleSwitch from '../../components/property_owner/ToggleSwitch'
 import { assets } from '../../../constants'
@@ -6,9 +6,10 @@ import { MdOutlineEdit } from "react-icons/md"
 import { RiDeleteBin6Line } from "react-icons/ri"
 import { FaShare } from "react-icons/fa"
 import { IoMdArrowBack } from "react-icons/io"
-import Loader from '../../components/Loader'
+// import Loader from '../../components/Loader'
 import { propertyApi } from '../../api/property'
 import { useSelector } from 'react-redux'
+import { roomApi } from '../../api/room';
 
 const statusColors = {
     available: "bg-green-200/70 text-green-700",
@@ -30,22 +31,21 @@ const PropertyOwnerManage = () => {
     const [selectedIds, setSelectedIds] = useState([])
     const [pageSize, setPageSize] = useState(5)
     const [properties, setProperties] = useState([])
+    const [rooms, setRooms] = useState([])
     const [loading, setLoading] = useState(true)
     const [showDeleteModal, setShowDeleteModal] = useState(false)
     const [propertyToDelete, setPropertyToDelete] = useState(null)
     const [deleting, setDeleting] = useState(false)
     const user = useSelector((state) => state.auth.user);
+    const [isRooms, setIsRooms] = useState(false);
+
 
     // Share modal states
     const [showShareModal, setShowShareModal] = useState(false)
     const [propertyToShare, setPropertyToShare] = useState(null)
     const [shareSuccess, setShareSuccess] = useState(null)
     
-    useEffect(() => {
-        fetchProperties()
-    }, [])
-
-    const fetchProperties = async () => {
+    const fetchProperties = useCallback(async () => {
         try {
             setLoading(true)
             const response = await propertyApi.list({ 
@@ -58,7 +58,26 @@ const PropertyOwnerManage = () => {
         } finally {
             setLoading(false)
         }
-    }
+    },[currentPage, pageSize])
+
+    const fetchRooms = useCallback(async () => {
+        try {
+        setLoading(true);
+
+        const response = await roomApi.list();
+        setRooms(response.rooms || []);
+        } catch (error) {
+        console.error('Error fetching rooms:', error);
+        } finally {
+        setLoading(false);
+        }
+    },[]);
+
+    useEffect(() => {
+        fetchProperties();
+        fetchRooms();
+      }, [fetchProperties, fetchRooms]);
+
 
     // Open delete confirmation modal
     const openDeleteModal = (property) => {
@@ -119,20 +138,34 @@ const PropertyOwnerManage = () => {
     }
 
     const filteredData = useMemo(() => {
-        return properties.filter(item =>
+        return isRooms
+        ? rooms.filter(item =>
+            item.roomTitle?.toLowerCase().includes(search.toLowerCase()) ||
+            item.propertyId?.location?.address?.toLowerCase().includes(search.toLowerCase())
+          ):
+        properties.filter(item =>
             item.title?.toLowerCase().includes(search.toLowerCase()) ||
             item.location?.address?.toLowerCase().includes(search.toLowerCase())
         )
-    }, [search, properties])
+    }, [isRooms, rooms, properties, search])
 
     const sortedData = useMemo(() => {
         const sorted = [...filteredData].sort((a, b) => {
-            if (a[sortKey] < b[sortKey]) return sortAsc ? -1 : 1
-            if (a[sortKey] > b[sortKey]) return sortAsc ? 1 : -1
-            return 0
-        })
-        return sorted
-    }, [filteredData, sortKey, sortAsc])
+          const aVal = isRooms 
+            ? (sortKey === 'title' ? a.roomTitle : a[sortKey])
+            : a[sortKey];
+      
+          const bVal = isRooms 
+            ? (sortKey === 'title' ? b.roomTitle : b[sortKey])
+            : b[sortKey];
+      
+          if (aVal < bVal) return sortAsc ? -1 : 1;
+          if (aVal > bVal) return sortAsc ? 1 : -1;
+          return 0;
+        });
+        return sorted;
+      }, [filteredData, sortKey, sortAsc, isRooms]);
+      
 
     const paginatedData = useMemo(() => {
         const start = (currentPage - 1) * pageSize
@@ -165,6 +198,33 @@ const PropertyOwnerManage = () => {
         )
     }
 
+    const getTitle = (item) => isRooms 
+    ? item.roomTitle || "Untitled Room" 
+    : item.title || "Untitled Property";
+  
+  const getImage = (item) => isRooms 
+    ? item.images?.[0] || assets.placeholder 
+    : item.propertyImages?.[0] || assets.placeholder;
+  
+  const getLocation = (item) => isRooms 
+    ? item.propertyId?.location?.address || "Location not specified"
+    : item.location?.address || "Location not specified";
+  
+  const getPrice = (item) => isRooms 
+    ? `$${item.pricePerMonth ?? "0"}`
+    : `$${item.billsIncludedUpTo ?? "0"}`;
+  
+  const getSize = (item) => isRooms 
+    ? item.size || "N/A"
+    : item.size || "N/A";
+  
+  
+  const getListingId = (item) => item._id ? item._id.slice(-5) : "N/A";
+  
+  const getDatePublished = (item) => item.createdAt 
+    ? new Date(item.createdAt).toLocaleDateString()
+    : "N/A";
+  
     return (
         <section className='w-full relative'>
             {/* Delete Confirmation Modal */}
@@ -284,7 +344,7 @@ const PropertyOwnerManage = () => {
       <button className="btn !text-sm">Bulk Edit</button>
     </>
   )}
-      <ToggleSwitch />
+      <ToggleSwitch isRooms={isRooms} setIsRooms={setIsRooms} fetchRooms={fetchRooms} />
 
 </div>
 
@@ -314,7 +374,7 @@ const PropertyOwnerManage = () => {
                             <tr>
                                 <th><input type="checkbox" onChange={toggleSelectAll} /></th>
                                 <th onClick={() => toggleSort("title")} className='cursor-pointer'>Name</th>
-                                <th>Status</th>
+                                {!isRooms && <th>Status</th>}
                                 <th onClick={() => toggleSort("size")} className='cursor-pointer'>Size</th>
                                 <th>Date Published</th>
                                 <th onClick={() => toggleSort("billsIncludedUpTo")} className='cursor-pointer'>Price</th>
@@ -334,63 +394,60 @@ const PropertyOwnerManage = () => {
                                         />
                                     </td>
                                     <td>
-                                        <Link to={`/manage/property/${item._id}/view`} className='flex items-center gap-2'>
+                                        <Link to={isRooms? '' : `/manage/property/${item._id}/view`} className='flex items-center gap-2'>
                                             <img 
-                                                src={
-                                                    item.propertyImages && item.propertyImages.length > 0 
-                                                    ? item.propertyImages[0] 
-                                                    : assets.placeholder
-                                                } 
+                                                src={getImage(item)} 
                                                 className='w-[40px] h-[40px] rounded-md object-cover' 
-                                                alt={item.title} 
+                                                alt={getTitle(item)}
                                             />
-                                            <span>{item.title || "Untitled Property"}</span>
+                                            <span>{getTitle(item) || "Untitled Property"}</span>
                                         </Link>
                                     </td>
+                                   { !isRooms &&
                                     <td>
                                         <p className={`w-fit px-3 py-2 rounded-lg flex items-center gap-2 ${statusColors[item.status || "unavailable"]}`}>
                                             <div className={`w-2 h-2 rounded-full ${dotColors[item.status || "unavailable"]}`}></div>
                                             <span className='text-sm capitalize'>{item.status || "unavailable"}</span>
                                         </p>
-                                    </td>
-                                    <td>{item.size || "N/A"}</td>
-                                    <td>{item.createdAt ? new Date(item.createdAt).toLocaleDateString() : "N/A"}</td>
-                                    <td>${item.billsIncludedUpTo || "0"}</td>
-                                    <td>{item._id ? item._id.slice(-5) : "N/A"}</td>
-                                    <td>{item.location?.address || "Location not specified"}</td>
-                                   <td>
-  <div className='flex items-center gap-2'>
-    {user?.role === 'property_owner' && (
-      <>
-        <Link 
-          to={`/manage/property/${item._id}/edit`}
-          className="text-gray-600 hover:text-black"
-        >
-          <MdOutlineEdit className='text-xl' />
-        </Link>
-        <button 
-          className='cursor-pointer text-gray-600 hover:text-red-500'
-          onClick={() => openDeleteModal(item)}
-        >
-          <RiDeleteBin6Line className='text-xl' />
-        </button>
-      </>
-    )}
-    {/* Shared button visible to all roles */}
-    <button 
-      className='cursor-pointer text-gray-600 hover:text-blue-500'
-      onClick={() => openShareModal(item)}
-    >
-      <FaShare className='text-lg' />
-    </button>
-  </div>
-</td>
+                                    </td>}
+                                    <td>{getSize(item) || "N/A"}</td>
+                                    <td>{getDatePublished(item)}</td>
+                                    <td>{getPrice(item) || "0"}</td>
+                                    <td>{getListingId(item)}</td>
+                                    <td>{getLocation(item) || "Location not specified"}</td>
+                                    <td>
+                                    <div className='flex items-center gap-2'>
+                                    {user?.role === 'property_owner' && (
+                                    <>
+                                        <Link 
+                                        to={isRooms?`/manage/room/${item.slug}/edit` : `/manage/property/${item._id}/edit`}
+                                        className="text-gray-600 hover:text-black"
+                                        >
+                                        <MdOutlineEdit className='text-xl' />
+                                        </Link>
+                                        <button 
+                                        className='cursor-pointer text-gray-600 hover:text-red-500'
+                                        onClick={() => openDeleteModal(item)}
+                                        >
+                                        <RiDeleteBin6Line className='text-xl' />
+                                        </button>
+                                    </>
+                                    )}
+                                    {/* Shared button visible to all roles */}
+                                    <button 
+                                    className='cursor-pointer text-gray-600 hover:text-blue-500'
+                                    onClick={() => openShareModal(item)}
+                                    >
+                                    <FaShare className='text-lg' />
+                                    </button>
+                                    </div>
+                                </td>
 
                                 </tr>
                             ))}
                             {paginatedData.length === 0 && (
                                 <tr>
-                                    <td colSpan="9" className="text-center py-4">No properties found.</td>
+                                    <td colSpan="9" className="text-center py-4">{loading? 'Loading properites...' : 'No properties found'}</td>
                                 </tr>
                             )}
                         </tbody>

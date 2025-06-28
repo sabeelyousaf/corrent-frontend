@@ -19,9 +19,16 @@ export const propertyApi = {
   // Update existing property
   update: async (id, payload) => {
     try {
+      const token = localStorage.getItem('token');
       const response = await axiosInstance.put(
         ENDPOINTS.PROPERTY.update(id), 
-        payload
+        payload,
+        {
+          headers: {
+            "Authorization": `Bearer ${token}`,
+          },
+          // withCredentials: true,
+        }
       );
       return response.data;
     } catch (error) {
